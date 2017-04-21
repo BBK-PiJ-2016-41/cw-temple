@@ -2,6 +2,12 @@ package student;
 
 import game.EscapeState;
 import game.ExplorationState;
+import game.NodeStatus;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.stream.*;
+import java.util.EmptyStackException;
 
 public class Explorer {
 
@@ -12,14 +18,14 @@ public class Explorer {
    * than returning, it will not count.
    * If you return from this function while not standing on top of the orb,
    * it will count as a failure.
-   *   
+   *
    * <p>There is no limit to how many steps you can take, but you will receive
    * a score bonus multiplier for finding the orb in fewer steps.</p>
-   * 
+   *
    * <p>At every step, you only know your current tile's ID and the ID of all
    * open neighbor tiles, as well as the distance to the orb at each of these tiles
    * (ignoring walls and obstacles).</p>
-   * 
+   *
    * <p>To get information about the current state, use functions
    * getCurrentLocation(),
    * getNeighbours(), and
@@ -36,7 +42,64 @@ public class Explorer {
    * @param state the information available at the current state
    */
   public void explore(ExplorationState state) {
-    //TODO:
+    //System.out.println("Current Location: " + state.getCurrentLocation());
+    //System.out.println("Distance to Orb: " + state.getDistanceToTarget());
+    Stack<Long> visited = new Stack<Long>();
+    Stack<Long> eliminated = new Stack<Long>();
+    Stack<Long> next = new Stack<Long>();
+    visited.push(state.getCurrentLocation());
+    while (state.getDistanceToTarget() > 0) {
+      //visited.push(state.getCurrentLocation());
+      boolean moved = false;
+      if (!next.isEmpty()) {
+        while (!moved && !next.isEmpty()) {
+          try {
+            state.moveTo(next.pop());
+            moved = true;
+          } catch (IllegalArgumentException e) {
+            System.out.println("That square was not a neighbour. Trying again...");
+            continue;
+          } catch (EmptyStackException e) {
+            System.out.println("The stack of potential squares is empty.");
+            continue;
+          }
+        }
+      }
+      if (state.getDistanceToTarget() == 0) {
+        break;
+      }
+      long currentLocation = state.getCurrentLocation();
+      int distance = state.getDistanceToTarget();
+      if (moved) {
+        visited.push(currentLocation);
+      }
+      Collection<NodeStatus> neighbours = state.getNeighbours();
+      Stream<NodeStatus> neighbourStream = neighbours.stream().filter((n) -> (n.getDistanceToTarget() <= distance && (!(visited.contains(n.getId()))) && (!(eliminated.contains(n.getId())))));
+      if (neighbourStream.count() > 0) {
+        neighbours.stream().filter((n) -> (n.getDistanceToTarget() <= distance && (!(visited.contains(n.getId()))) && (!(eliminated.contains(n.getId()))))).forEach((n) -> next.push(n.getId()));
+      } else {
+        Stream<NodeStatus> nonDistanceStream = neighbours.stream().filter((n) -> (!(visited.contains(n.getId())) && !(eliminated.contains(n.getId()))));
+        if (nonDistanceStream.count() > 0) {
+          neighbours.stream().filter((n) -> (!visited.contains(n.getId()) && !eliminated.contains(n.getId()))).forEach((n) -> next.push(n.getId()));
+        } else {
+          eliminated.push(currentLocation);
+          next.clear();
+          if (moved) {
+            visited.pop();
+          }
+          try {
+            state.moveTo(visited.pop());
+          } catch (IllegalArgumentException e) {
+            //try more than once?
+            System.out.println("That square was not a neighbour.");
+          } catch (EmptyStackException e) {
+            System.out.println("Let's start again from here.");
+            eliminated.clear();
+          }
+        }
+      }
+    }
+    return;
   }
 
   /**
@@ -44,20 +107,20 @@ public class Explorer {
    * gold as possible along the way. Your solution must ALWAYS escape before time runs
    * out, and this should be prioritized above collecting gold.
    *
-   * <p>You now have access to the entire underlying graph, which can be accessed 
+   * <p>You now have access to the entire underlying graph, which can be accessed
    * through EscapeState.
    * getCurrentNode() and getExit() will return you Node objects of interest, and getVertices()
    * will return a collection of all nodes on the graph.</p>
-   * 
+   *
    * <p>Note that time is measured entirely in the number of steps taken, and for each step
    * the time remaining is decremented by the weight of the edge taken. You can use
    * getTimeRemaining() to get the time still remaining, pickUpGold() to pick up any gold
    * on your current tile (this will fail if no such gold exists), and moveTo() to move
    * to a destination node adjacent to your current node.</p>
-   * 
+   *
    * <p>You must return from this function while standing at the exit. Failing to do so before time
    * runs out or returning from the wrong location will be considered a failed run.</p>
-   * 
+   *
    * <p>You will always have enough time to escape using the shortest path from the starting
    * position to the exit, although this will not collect much gold.</p>
    *

@@ -7,9 +7,9 @@
  */
 
 // Apply the java-library plugin to add support for Java Library
-apply plugin: 'java'
+//apply plugin: 'java'
 apply plugin: 'java-library'
-apply plugin: 'checkstyle'
+//apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'jdepend'
 apply plugin: 'pmd'
@@ -38,26 +38,26 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-//mainClassName = "main.GUImain"
+mainClassName = "main.GUImain"
 //mainClassName = "main.TXTmain"
-mainClassName = "searchexample.Driver"
+//mainClassName = "searchexample.Driver"
 
 
 jdepend {
     ignoreFailures = true
 }
-
+/*
 checkstyle {
     toolVersion = "7.6"
 }
-
+*/
 findbugs {
     toolVersion = "3.0.1"
     ignoreFailures = true
     reportLevel = "high"
     effort = "max"
 }
-
+/*
 tasks.withType(Checkstyle) {
     reports {
         xml.enabled false
@@ -65,7 +65,7 @@ tasks.withType(Checkstyle) {
         html.stylesheet resources.text.fromFile('config/xsl/checkstyle-custom.xsl')
     }
 }
-
+*/
 tasks.withType(FindBugs) {
     reports {
         xml.enabled false

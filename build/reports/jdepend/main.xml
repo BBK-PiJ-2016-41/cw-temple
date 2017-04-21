@@ -1,0 +1,334 @@
+<?xml version="1.0"?>
+<JDepend>
+    <Packages>
+
+        <Package name="game">
+            <Stats>
+                <TotalClasses>20</TotalClasses>
+                <ConcreteClasses>18</ConcreteClasses>
+                <AbstractClasses>2</AbstractClasses>
+                <Ca>3</Ca>
+                <Ce>2</Ce>
+                <A>0.1</A>
+                <I>0.4</I>
+                <D>0.5</D>
+                <V>1</V>
+            </Stats>
+
+            <AbstractClasses>
+                <Class sourceFile="EscapeState.java">
+                    game.EscapeState
+                </Class>
+                <Class sourceFile="ExplorationState.java">
+                    game.ExplorationState
+                </Class>
+            </AbstractClasses>
+
+            <ConcreteClasses>
+                <Class sourceFile="Cavern.java">
+                    game.Cavern$1
+                </Class>
+                <Class sourceFile="Cavern.java">
+                    game.Cavern$Direction
+                </Class>
+                <Class sourceFile="Cavern.java">
+                    game.Cavern$Point
+                </Class>
+                <Class sourceFile="Constants.java">
+                    game.Constants
+                </Class>
+                <Class sourceFile="Edge.java">
+                    game.Edge
+                </Class>
+                <Class sourceFile="GameState.java">
+                    game.GameState$1
+                </Class>
+                <Class sourceFile="GameState.java">
+                    game.GameState$OutOfTimeException
+                </Class>
+                <Class sourceFile="GameState.java">
+                    game.GameState$Stage
+                </Class>
+                <Class sourceFile="InternalMinHeap.java">
+                    game.InternalMinHeap
+                </Class>
+                <Class sourceFile="InternalMinHeap.java">
+                    game.InternalMinHeap$1
+                </Class>
+                <Class sourceFile="InternalMinHeap.java">
+                    game.InternalMinHeap$Info
+                </Class>
+                <Class sourceFile="Node.java">
+                    game.Node
+                </Class>
+                <Class sourceFile="NodeStatus.java">
+                    game.NodeStatus
+                </Class>
+                <Class sourceFile="Pair.java">
+                    game.Pair
+                </Class>
+                <Class sourceFile="Tile.java">
+                    game.Tile
+                </Class>
+                <Class sourceFile="Tile.java">
+                    game.Tile$1
+                </Class>
+                <Class sourceFile="Tile.java">
+                    game.Tile$Type
+                </Class>
+                <Class sourceFile="Tile.java">
+                    game.Tile$Type$1
+                </Class>
+            </ConcreteClasses>
+
+            <DependsUpon>
+                <Package>java.lang</Package>
+                <Package>java.util</Package>
+            </DependsUpon>
+
+            <UsedBy>
+                <Package>gui</Package>
+                <Package>main</Package>
+                <Package>student</Package>
+            </UsedBy>
+        </Package>
+
+        <Package name="gui">
+            <Stats>
+                <TotalClasses>13</TotalClasses>
+                <ConcreteClasses>12</ConcreteClasses>
+                <AbstractClasses>1</AbstractClasses>
+                <Ca>0</Ca>
+                <Ce>11</Ce>
+                <A>0.08</A>
+                <I>1</I>
+                <D>0.08</D>
+                <V>1</V>
+            </Stats>
+
+            <AbstractClasses>
+                <Class sourceFile="Constants.java">
+                    gui.Constants
+                </Class>
+            </AbstractClasses>
+
+            <ConcreteClasses>
+                <Class sourceFile="ExplorerSprite.java">
+                    gui.ExplorerSprite
+                </Class>
+                <Class sourceFile="ExplorerSprite.java">
+                    gui.ExplorerSprite$1
+                </Class>
+                <Class sourceFile="ExplorerSprite.java">
+                    gui.ExplorerSprite$2
+                </Class>
+                <Class sourceFile="ExplorerSprite.java">
+                    gui.ExplorerSprite$3
+                </Class>
+                <Class sourceFile="ExplorerSprite.java">
+                    gui.ExplorerSprite$MovePair
+                </Class>
+                <Class sourceFile="GUI.java">
+                    gui.GUI
+                </Class>
+                <Class sourceFile="GUI.java">
+                    gui.GUI$1
+                </Class>
+                <Class sourceFile="MazePanel.java">
+                    gui.MazePanel
+                </Class>
+                <Class sourceFile="MazePanel.java">
+                    gui.MazePanel$1
+                </Class>
+                <Class sourceFile="MazePanel.java">
+                    gui.MazePanel$2
+                </Class>
+                <Class sourceFile="Sprite.java">
+                    gui.Sprite
+                </Class>
+                <Class sourceFile="TileSelectPanel.java">
+                    gui.TileSelectPanel
+                </Class>
+            </ConcreteClasses>
+
+            <DependsUpon>
+                <Package>game</Package>
+                <Package>java.awt</Package>
+                <Package>java.awt.event</Package>
+                <Package>java.awt.geom</Package>
+                <Package>java.awt.image</Package>
+                <Package>java.io</Package>
+                <Package>java.lang</Package>
+                <Package>java.net</Package>
+                <Package>java.util.concurrent</Package>
+                <Package>javax.imageio</Package>
+                <Package>javax.swing</Package>
+            </DependsUpon>
+
+            <UsedBy>
+            </UsedBy>
+        </Package>
+
+        <Package name="java.awt">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.awt.event">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.awt.geom">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.awt.image">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.io">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.lang">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.net">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.util">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="java.util.concurrent">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="javax.imageio">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="javax.swing">
+            <error>No stats available: package referenced, but not analyzed.</error>
+        </Package>
+
+        <Package name="main">
+            <Stats>
+                <TotalClasses>3</TotalClasses>
+                <ConcreteClasses>3</ConcreteClasses>
+                <AbstractClasses>0</AbstractClasses>
+                <Ca>0</Ca>
+                <Ce>4</Ce>
+                <A>0</A>
+                <I>1</I>
+                <D>0</D>
+                <V>1</V>
+            </Stats>
+
+            <AbstractClasses>
+            </AbstractClasses>
+
+            <ConcreteClasses>
+                <Class sourceFile="GUImain.java">
+                    main.GUImain
+                </Class>
+                <Class sourceFile="TXTmain.java">
+                    main.TXTmain
+                </Class>
+                <Class sourceFile="Utilities.java">
+                    main.Utilities
+                </Class>
+            </ConcreteClasses>
+
+            <DependsUpon>
+                <Package>game</Package>
+                <Package>java.io</Package>
+                <Package>java.lang</Package>
+                <Package>java.util</Package>
+            </DependsUpon>
+
+            <UsedBy>
+            </UsedBy>
+        </Package>
+
+        <Package name="searchexample">
+            <Stats>
+                <TotalClasses>5</TotalClasses>
+                <ConcreteClasses>3</ConcreteClasses>
+                <AbstractClasses>2</AbstractClasses>
+                <Ca>0</Ca>
+                <Ce>4</Ce>
+                <A>0.4</A>
+                <I>1</I>
+                <D>0.4</D>
+                <V>1</V>
+            </Stats>
+
+            <AbstractClasses>
+                <Class sourceFile="Graph.java">
+                    searchexample.Graph
+                </Class>
+                <Class sourceFile="Node.java">
+                    searchexample.Node
+                </Class>
+            </AbstractClasses>
+
+            <ConcreteClasses>
+                <Class sourceFile="Driver.java">
+                    searchexample.Driver
+                </Class>
+                <Class sourceFile="GraphImpl.java">
+                    searchexample.GraphImpl
+                </Class>
+                <Class sourceFile="NodeImpl.java">
+                    searchexample.NodeImpl
+                </Class>
+            </ConcreteClasses>
+
+            <DependsUpon>
+                <Package>java.io</Package>
+                <Package>java.lang</Package>
+                <Package>java.util</Package>
+                <Package>java.util.concurrent</Package>
+            </DependsUpon>
+
+            <UsedBy>
+            </UsedBy>
+        </Package>
+
+        <Package name="student">
+            <Stats>
+                <TotalClasses>1</TotalClasses>
+                <ConcreteClasses>1</ConcreteClasses>
+                <AbstractClasses>0</AbstractClasses>
+                <Ca>0</Ca>
+                <Ce>2</Ce>
+                <A>0</A>
+                <I>1</I>
+                <D>0</D>
+                <V>1</V>
+            </Stats>
+
+            <AbstractClasses>
+            </AbstractClasses>
+
+            <ConcreteClasses>
+                <Class sourceFile="Explorer.java">
+                    student.Explorer
+                </Class>
+            </ConcreteClasses>
+
+            <DependsUpon>
+                <Package>game</Package>
+                <Package>java.lang</Package>
+            </DependsUpon>
+
+            <UsedBy>
+            </UsedBy>
+        </Package>
+    </Packages>
+
+    <Cycles>
+    </Cycles>
+</JDepend>
