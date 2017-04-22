@@ -7,11 +7,11 @@
                 <TotalClasses>20</TotalClasses>
                 <ConcreteClasses>18</ConcreteClasses>
                 <AbstractClasses>2</AbstractClasses>
-                <Ca>3</Ca>
+                <Ca>2</Ca>
                 <Ce>2</Ce>
                 <A>0.1</A>
-                <I>0.4</I>
-                <D>0.5</D>
+                <I>0.5</I>
+                <D>0.4</D>
                 <V>1</V>
             </Stats>
 
@@ -89,7 +89,6 @@
             <UsedBy>
                 <Package>gui</Package>
                 <Package>main</Package>
-                <Package>student</Package>
             </UsedBy>
         </Package>
 
@@ -291,37 +290,6 @@
                 <Package>java.lang</Package>
                 <Package>java.util</Package>
                 <Package>java.util.concurrent</Package>
-            </DependsUpon>
-
-            <UsedBy>
-            </UsedBy>
-        </Package>
-
-        <Package name="student">
-            <Stats>
-                <TotalClasses>1</TotalClasses>
-                <ConcreteClasses>1</ConcreteClasses>
-                <AbstractClasses>0</AbstractClasses>
-                <Ca>0</Ca>
-                <Ce>2</Ce>
-                <A>0</A>
-                <I>1</I>
-                <D>0</D>
-                <V>1</V>
-            </Stats>
-
-            <AbstractClasses>
-            </AbstractClasses>
-
-            <ConcreteClasses>
-                <Class sourceFile="Explorer.java">
-                    student.Explorer
-                </Class>
-            </ConcreteClasses>
-
-            <DependsUpon>
-                <Package>game</Package>
-                <Package>java.lang</Package>
             </DependsUpon>
 
             <UsedBy>

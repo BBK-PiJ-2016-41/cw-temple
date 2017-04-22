@@ -3,11 +3,20 @@ package student;
 import game.EscapeState;
 import game.ExplorationState;
 import game.NodeStatus;
+import game.Node;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.stream.*;
 import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.HashSet;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.Optional;
+
 
 public class Explorer {
 
@@ -127,6 +136,66 @@ public class Explorer {
    * @param state the information available at the current state
    */
   public void escape(EscapeState state) {
-    //TODO: Escape from the cavern before time runs out
+    Node start = state.getCurrentNode();
+    Node exit = state.getExit();
+    Collection<Node> nodes = state.getVertices();
+    System.out.println("Vertices: " + nodes.size());
+    //add the distances
+    Map<Node, Integer> distances = new HashMap<Node, Integer>();
+    nodes.stream().filter(n -> n != start).forEach(n -> distances.put(n, 10000000));
+    distances.put(start, 0);
+    //create the visited set
+    Set<Node> visited = new HashSet<Node>();
+    visited.add(start);
+    //create the unvisited set
+    Set<Node> unvisited = new HashSet<Node>();
+    nodes.stream().filter(n -> n != start).forEach(n -> unvisited.add(n));
+    //create a map for predecessors
+    Map<Node, Node> predecessors = new HashMap<Node, Node>();
+    //Create a pointer node
+    Node current = start;
+    while (!visited.contains(exit)) {
+      Set<Node> neighbours = current.getNeighbours();
+      int distFromCurrent = distances.get(current);
+      final Node copy = current;
+      neighbours.stream().filter(n -> !visited.contains(n) && (distFromCurrent + 1 < distances.get(n))).forEach(n -> {
+        distances.replace(n, distances.get(n), distFromCurrent + 1);
+        if (predecessors.containsKey(n)) {
+          predecessors.replace(n, predecessors.get(n), copy);
+        } else {
+          predecessors.put(n, copy);
+        }
+      });
+      Optional<Entry<Node, Integer>> optionalNode = distances.entrySet().stream().filter(n -> unvisited.contains(n.getKey())).min(Comparator.comparingInt(Entry::getValue));
+      if (optionalNode.isPresent()) {
+        Entry<Node, Integer> entry = optionalNode.get();
+        Node next = entry.getKey();
+        System.out.println(next.getId());
+        unvisited.remove(next);
+        visited.add(next);
+        current = next;
+      }
+    }
+    Stack<Node> path = new Stack<Node>();
+    Node pointer = exit;
+    path.push(exit);
+    while (pointer != start) {
+      System.out.println(path.size());
+      Node prev = predecessors.get(pointer);
+      path.push(prev);
+      pointer = prev;
+    }
+    //move the explorer to the exit, picking up gold along the way
+    path.pop();
+    while (!path.isEmpty()) {
+      try {
+        state.pickUpGold();
+      } catch (Exception e) {
+        System.out.println("There is no gold here. Carry on.");
+      }
+      state.moveTo(path.pop());
+    }
+    return;
   }
+
 }
