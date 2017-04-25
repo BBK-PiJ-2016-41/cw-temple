@@ -86,3 +86,11 @@ jacocoTestReport {
         html.destination "${buildDir}/jacocoHtml"
     }
 }
+
+sourceSets {
+  test {
+    resources {
+      srcDir "student"
+    }
+  }
+}
