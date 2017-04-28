@@ -51,14 +51,12 @@ public class Explorer {
    * @param state the information available at the current state
    */
   public void explore(ExplorationState state) {
-    //System.out.println("Current Location: " + state.getCurrentLocation());
-    //System.out.println("Distance to Orb: " + state.getDistanceToTarget());
+    /*
     Stack<Long> visited = new Stack<Long>();
     Stack<Long> eliminated = new Stack<Long>();
     Stack<Long> next = new Stack<Long>();
     visited.push(state.getCurrentLocation());
     while (state.getDistanceToTarget() > 0) {
-      //visited.push(state.getCurrentLocation());
       boolean moved = false;
       if (!next.isEmpty()) {
         while (!moved && !next.isEmpty()) {
@@ -103,9 +101,74 @@ public class Explorer {
             System.out.println("That square was not a neighbour.");
           } catch (EmptyStackException e) {
             System.out.println("Let's start again from here.");
-            eliminated.clear();
+            break;
           }
         }
+      }
+    }
+    */
+    if (state.getDistanceToTarget() > 0) {
+      modifiedDepthFirst(state);
+    }
+    return;
+}
+
+private void modifiedDepthFirst(ExplorationState state) {
+  Stack<Long> stack = new Stack<Long>();
+  Long current = state.getCurrentLocation();
+  stack.add(current);
+  Stack<Long> visited = new Stack<Long>();
+  Stack<Long> path = new Stack<Long>();
+  path.add(current);
+  visited.add(current);
+  while (!stack.isEmpty() && state.getDistanceToTarget() != 0) {
+    int distance = state.getDistanceToTarget();
+    Collection<NodeStatus> neighbours = state.getNeighbours();
+    Stream<NodeStatus> distanceStream = neighbours.stream().filter(n -> (!visited.contains(n.getId()) && (n.getDistanceToTarget() < distance)));
+    if (distanceStream.count() > 0) {
+      neighbours.stream().filter(n -> ((!visited.contains(n.getId())) && (n.getDistanceToTarget() < distance))).forEach(n -> stack.push(n.getId()));
+      state.moveTo(stack.pop());
+      visited.add(state.getCurrentLocation());
+      path.add(state.getCurrentLocation());
+    } else {
+    Stream<NodeStatus> neighbourStream = neighbours.stream().filter(n -> (!visited.contains(n.getId())));
+      if (neighbourStream.count() > 0) {
+        neighbours.stream().filter((n) -> (!visited.contains(n.getId()))).forEach((n) -> stack.push(n.getId()));
+        state.moveTo(stack.pop());
+        visited.add(state.getCurrentLocation());
+        path.add(state.getCurrentLocation());
+      } else {
+        if (path.peek() == state.getCurrentLocation()) {
+          path.pop();
+        }
+        state.moveTo(path.peek());
+      }
+    }
+  }
+  return;
+}
+
+  private void depthFirst(ExplorationState state) {
+    Stack<Long> stack = new Stack<Long>();
+    Long current = state.getCurrentLocation();
+    stack.add(current);
+    Stack<Long> visited = new Stack<Long>();
+    Stack<Long> path = new Stack<Long>();
+    path.add(current);
+    visited.add(current);
+    while (!stack.isEmpty() && state.getDistanceToTarget() != 0) {
+      Collection<NodeStatus> neighbours = state.getNeighbours();
+      Stream<NodeStatus> neighbourStream = neighbours.stream().filter((n) -> (!visited.contains(n.getId())));
+      if (neighbourStream.count() > 0) {
+        neighbours.stream().filter((n) -> (!visited.contains(n.getId()))).forEach((n) -> stack.push(n.getId()));
+        state.moveTo(stack.pop());
+        visited.add(state.getCurrentLocation());
+        path.add(state.getCurrentLocation());
+      } else {
+        if (path.peek() == state.getCurrentLocation()) {
+          path.pop();
+        }
+        state.moveTo(path.peek());
       }
     }
     return;
@@ -139,8 +202,31 @@ public class Explorer {
     Node start = state.getCurrentNode();
     Node exit = state.getExit();
     Collection<Node> nodes = state.getVertices();
-    System.out.println("Vertices: " + nodes.size());
     //add the distances
+    Stack<Node> exitPath = dijkstra(nodes, start, exit);
+    Set<Node> checkedGold = new HashSet<Node>();
+    getGold(state);
+    checkedGold.add(start);
+    //move the explorer to the exit, picking up gold along the way
+    while (exitPath.size() < 0.75 * (state.getTimeRemaining()/8)) {
+      Set<Node> neighbours = state.getCurrentNode().getNeighbours();
+      Optional<Node> first = neighbours.stream().filter(n -> !checkedGold.contains(n)).findAny();
+      if (first.isPresent()) {
+        Node moveTo = first.get();
+        state.moveTo(moveTo);
+        getGold(state);
+        checkedGold.add(moveTo);
+      } else {
+        break;
+      }
+      exitPath = dijkstra(nodes, state.getCurrentNode(), exit);
+      System.out.println(exitPath.size());
+    }
+    this.traverse(exitPath, state);
+    return;
+  }
+
+  private Stack<Node> dijkstra(Collection<Node> nodes, Node start, Node exit) {
     Map<Node, Integer> distances = new HashMap<Node, Integer>();
     nodes.stream().filter(n -> n != start).forEach(n -> distances.put(n, 10000000));
     distances.put(start, 0);
@@ -150,6 +236,7 @@ public class Explorer {
     //create the unvisited set
     Set<Node> unvisited = new HashSet<Node>();
     nodes.stream().filter(n -> n != start).forEach(n -> unvisited.add(n));
+    //create a map for predecessors
     //create a map for predecessors
     Map<Node, Node> predecessors = new HashMap<Node, Node>();
     //Create a pointer node
@@ -170,7 +257,6 @@ public class Explorer {
       if (optionalNode.isPresent()) {
         Entry<Node, Integer> entry = optionalNode.get();
         Node next = entry.getKey();
-        System.out.println(next.getId());
         unvisited.remove(next);
         visited.add(next);
         current = next;
@@ -180,22 +266,26 @@ public class Explorer {
     Node pointer = exit;
     path.push(exit);
     while (pointer != start) {
-      System.out.println(path.size());
       Node prev = predecessors.get(pointer);
       path.push(prev);
       pointer = prev;
     }
-    //move the explorer to the exit, picking up gold along the way
-    path.pop();
-    while (!path.isEmpty()) {
-      try {
-        state.pickUpGold();
-      } catch (Exception e) {
-        System.out.println("There is no gold here. Carry on.");
-      }
-      state.moveTo(path.pop());
-    }
-    return;
+    return path;
   }
 
+  private void traverse(Stack<Node> path, EscapeState state) {
+    path.pop();
+    while (!path.isEmpty()) {
+      getGold(state);
+      state.moveTo(path.pop());
+    }
+  }
+
+  private void getGold(EscapeState state) {
+    try {
+      state.pickUpGold();
+    } catch (Exception e) {
+      System.out.println("There is no gold here. Carry on.");
+    }
+  }
 }

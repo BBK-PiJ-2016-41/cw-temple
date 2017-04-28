@@ -26,18 +26,18 @@ public class TXTmain {
         System.err.println("Couldn't parse argument for -n option");
       }
     }
-    
+
     Optional<Long> seed = Utilities.parseSeedArgs(args);
 
     int totalScore = 0;
 
-    for (int i = 0; i < numTimesToRun; i++) {
+    for (int i = 0; i < 1000; i++) {
       totalScore += GameState.runNewGame((seed.isPresent() ? seed.get() : 0), false);
       System.out.println();
     }
 
     if (totalScore != 0) {
-      System.out.println("Average score : " + totalScore / numTimesToRun);
+      System.out.println("Average score : " + totalScore / 1000);
     }
   }
 }
