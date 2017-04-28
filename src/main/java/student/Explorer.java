@@ -51,104 +51,6 @@ public class Explorer {
    * @param state the information available at the current state
    */
   public void explore(ExplorationState state) {
-    /*
-    Stack<Long> visited = new Stack<Long>();
-    Stack<Long> eliminated = new Stack<Long>();
-    Stack<Long> next = new Stack<Long>();
-    visited.push(state.getCurrentLocation());
-    while (state.getDistanceToTarget() > 0) {
-      boolean moved = false;
-      if (!next.isEmpty()) {
-        while (!moved && !next.isEmpty()) {
-          try {
-            state.moveTo(next.pop());
-            moved = true;
-          } catch (IllegalArgumentException e) {
-            System.out.println("That square was not a neighbour. Trying again...");
-            continue;
-          } catch (EmptyStackException e) {
-            System.out.println("The stack of potential squares is empty.");
-            continue;
-          }
-        }
-      }
-      if (state.getDistanceToTarget() == 0) {
-        break;
-      }
-      long currentLocation = state.getCurrentLocation();
-      int distance = state.getDistanceToTarget();
-      if (moved) {
-        visited.push(currentLocation);
-      }
-      Collection<NodeStatus> neighbours = state.getNeighbours();
-      Stream<NodeStatus> neighbourStream = neighbours.stream().filter((n) -> (n.getDistanceToTarget() <= distance && (!(visited.contains(n.getId()))) && (!(eliminated.contains(n.getId())))));
-      if (neighbourStream.count() > 0) {
-        neighbours.stream().filter((n) -> (n.getDistanceToTarget() <= distance && (!(visited.contains(n.getId()))) && (!(eliminated.contains(n.getId()))))).forEach((n) -> next.push(n.getId()));
-      } else {
-        Stream<NodeStatus> nonDistanceStream = neighbours.stream().filter((n) -> (!(visited.contains(n.getId())) && !(eliminated.contains(n.getId()))));
-        if (nonDistanceStream.count() > 0) {
-          neighbours.stream().filter((n) -> (!visited.contains(n.getId()) && !eliminated.contains(n.getId()))).forEach((n) -> next.push(n.getId()));
-        } else {
-          eliminated.push(currentLocation);
-          next.clear();
-          if (moved) {
-            visited.pop();
-          }
-          try {
-            state.moveTo(visited.pop());
-          } catch (IllegalArgumentException e) {
-            //try more than once?
-            System.out.println("That square was not a neighbour.");
-          } catch (EmptyStackException e) {
-            System.out.println("Let's start again from here.");
-            break;
-          }
-        }
-      }
-    }
-    */
-    if (state.getDistanceToTarget() > 0) {
-      modifiedDepthFirst(state);
-    }
-    return;
-}
-
-private void modifiedDepthFirst(ExplorationState state) {
-  Stack<Long> stack = new Stack<Long>();
-  Long current = state.getCurrentLocation();
-  stack.add(current);
-  Stack<Long> visited = new Stack<Long>();
-  Stack<Long> path = new Stack<Long>();
-  path.add(current);
-  visited.add(current);
-  while (!stack.isEmpty() && state.getDistanceToTarget() != 0) {
-    int distance = state.getDistanceToTarget();
-    Collection<NodeStatus> neighbours = state.getNeighbours();
-    Stream<NodeStatus> distanceStream = neighbours.stream().filter(n -> (!visited.contains(n.getId()) && (n.getDistanceToTarget() < distance)));
-    if (distanceStream.count() > 0) {
-      neighbours.stream().filter(n -> ((!visited.contains(n.getId())) && (n.getDistanceToTarget() < distance))).forEach(n -> stack.push(n.getId()));
-      state.moveTo(stack.pop());
-      visited.add(state.getCurrentLocation());
-      path.add(state.getCurrentLocation());
-    } else {
-    Stream<NodeStatus> neighbourStream = neighbours.stream().filter(n -> (!visited.contains(n.getId())));
-      if (neighbourStream.count() > 0) {
-        neighbours.stream().filter((n) -> (!visited.contains(n.getId()))).forEach((n) -> stack.push(n.getId()));
-        state.moveTo(stack.pop());
-        visited.add(state.getCurrentLocation());
-        path.add(state.getCurrentLocation());
-      } else {
-        if (path.peek() == state.getCurrentLocation()) {
-          path.pop();
-        }
-        state.moveTo(path.peek());
-      }
-    }
-  }
-  return;
-}
-
-  private void depthFirst(ExplorationState state) {
     Stack<Long> stack = new Stack<Long>();
     Long current = state.getCurrentLocation();
     stack.add(current);
@@ -157,18 +59,27 @@ private void modifiedDepthFirst(ExplorationState state) {
     path.add(current);
     visited.add(current);
     while (!stack.isEmpty() && state.getDistanceToTarget() != 0) {
+      int distance = state.getDistanceToTarget();
       Collection<NodeStatus> neighbours = state.getNeighbours();
-      Stream<NodeStatus> neighbourStream = neighbours.stream().filter((n) -> (!visited.contains(n.getId())));
-      if (neighbourStream.count() > 0) {
-        neighbours.stream().filter((n) -> (!visited.contains(n.getId()))).forEach((n) -> stack.push(n.getId()));
+      Stream<NodeStatus> distanceStream = neighbours.stream().filter(n -> (!visited.contains(n.getId()) && (n.getDistanceToTarget() < distance)));
+      if (distanceStream.count() > 0) {
+        neighbours.stream().filter(n -> ((!visited.contains(n.getId())) && (n.getDistanceToTarget() < distance))).forEach(n -> stack.push(n.getId()));
         state.moveTo(stack.pop());
         visited.add(state.getCurrentLocation());
         path.add(state.getCurrentLocation());
       } else {
-        if (path.peek() == state.getCurrentLocation()) {
-          path.pop();
+      Stream<NodeStatus> neighbourStream = neighbours.stream().filter(n -> (!visited.contains(n.getId())));
+        if (neighbourStream.count() > 0) {
+          neighbours.stream().filter((n) -> (!visited.contains(n.getId()))).forEach((n) -> stack.push(n.getId()));
+          state.moveTo(stack.pop());
+          visited.add(state.getCurrentLocation());
+          path.add(state.getCurrentLocation());
+        } else {
+          if (path.peek() == state.getCurrentLocation()) {
+            path.pop();
+          }
+          state.moveTo(path.peek());
         }
-        state.moveTo(path.peek());
       }
     }
     return;
@@ -207,20 +118,25 @@ private void modifiedDepthFirst(ExplorationState state) {
     Set<Node> checkedGold = new HashSet<Node>();
     getGold(state);
     checkedGold.add(start);
+    int totalCost = 4;
+    int moves = 1;
     //move the explorer to the exit, picking up gold along the way
-    while (exitPath.size() < 0.75 * (state.getTimeRemaining()/8)) {
+    while (exitPath.size() < 0.5 * state.getTimeRemaining()/(Math.floor(totalCost/moves)) && exitPath.size() > 10) {
       Set<Node> neighbours = state.getCurrentNode().getNeighbours();
       Optional<Node> first = neighbours.stream().filter(n -> !checkedGold.contains(n)).findAny();
       if (first.isPresent()) {
+        int preTime = state.getTimeRemaining();
         Node moveTo = first.get();
         state.moveTo(moveTo);
+        int postTime = state.getTimeRemaining();
+        totalCost += (preTime - postTime);
+        moves++;
         getGold(state);
         checkedGold.add(moveTo);
       } else {
         break;
       }
       exitPath = dijkstra(nodes, state.getCurrentNode(), exit);
-      System.out.println(exitPath.size());
     }
     this.traverse(exitPath, state);
     return;
@@ -285,7 +201,7 @@ private void modifiedDepthFirst(ExplorationState state) {
     try {
       state.pickUpGold();
     } catch (Exception e) {
-      System.out.println("There is no gold here. Carry on.");
+      //System.out.println("There is no gold here. Carry on.");
     }
   }
 }
