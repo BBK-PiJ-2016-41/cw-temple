@@ -36,10 +36,11 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
 }
 
-mainClassName = "main.GUImain"
-//mainClassName = "main.TXTmain"
+//mainClassName = "main.GUImain"
+mainClassName = "main.TXTmain"
 //mainClassName = "searchexample.Driver"
 
 
@@ -68,8 +69,8 @@ tasks.withType(Checkstyle) {
 */
 tasks.withType(FindBugs) {
     reports {
-        xml.enabled false
-        html.enabled true
+        xml.enabled true
+        //html.enabled true
         html.stylesheet resources.text.fromFile('config/xsl/findbugs-custom.xsl')
     }
 }
@@ -88,9 +89,9 @@ jacocoTestReport {
 }
 
 sourceSets {
-  test {
-    resources {
-      srcDir "student"
+    test {
+        java {
+            srcDirs = ['src/main/java/student']
+        }
     }
-  }
 }
